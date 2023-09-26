@@ -1,8 +1,8 @@
 <?php
 // Definimos variables
-$nombre = "Fulano";
-$apellidos = "de Tal";
-$ht = 60;
+$nombre = $_GET['nombre'];
+$apellidos = $_GET['apellidos'];
+$ht = $_GET['ht'];
 
 // Definimos constantes
 define("CUOTA_HORA_NORMAL", 20);
@@ -39,7 +39,7 @@ else {
 			include('vistas/desglose_con_he.php');
 		}
 		else {
-			include('vistas/prueba/prueba.php');
+			include('vistas/desglose_sin_he.php');
 		}
 
 		//include ($ht > 40) ? 'vistas/desglose_con_he.php' : 'vistas/desglose_sin_he.php';

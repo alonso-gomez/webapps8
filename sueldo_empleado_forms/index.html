@@ -9,14 +9,20 @@
 	<h1>Formulario para calcular el sueldo de un empleado</h1>
 	<p>Utiliza el formulario debajo para capturar los datos necesarios para calcular el sueldo de un empleado y mostrar el desglose de su sueldo.</p>
 
-	<form action="" method="">
-		<label for=""></label>
-		<input type="text">
-		<label for=""></label>
-		<input type="text">
-		<label for=""></label>
-		<input type="text">
-		<input type="submit">
+	<form action="calculo_sueldo.php" method="get">
+		<label for="nombre">Nombre:</label>
+		<input type="text" name="nombre">
+		<br><br>
+
+		<label for="apellidos">Apellidos:</label>
+		<input type="text" name="apellidos">
+		<br><br>
+
+		<label for="ht">Horas trabajadas:</label>
+		<input type="text" name="ht">
+		<br><br>
+
+		<input type="submit" value="Calcular sueldo">
 	</form>
 </body>
 </html>
