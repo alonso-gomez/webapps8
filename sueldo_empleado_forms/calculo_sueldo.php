@@ -8,17 +8,31 @@ $ht = $_GET['ht'];
 define("CUOTA_HORA_NORMAL", 20);
 define("CUOTA_HORA_EXTRA", 40);
 
-// Evaluamos las horas trabajadas para determinar si hay horas extras o no
-if($ht > 40) {
-	// Calculo de sueldo con horas extras
-	$he = $ht - 40;
-	$sueldo_he = $he * CUOTA_HORA_EXTRA;
-	$sueldo_hn = 40 * CUOTA_HORA_NORMAL;
-	$total = $sueldo_hn + $sueldo_he;
+// VALIDACIONES
+// las realizamos antes para que en caso de que exista un error no se ejecute el calculo del sueldo ni se presente el desglose
+
+// validamos que no existan cajas vacias
+foreach($_GET as $calzon => $caca) {
+	if($caca == "") $error[] = "La caja $calzon es requerida";
 }
-else {
-	// Calculo de sueldo sin horas extras
-	$total = $ht * CUOTA_HORA_NORMAL;
+
+// validamos si las horas trabajadas es un numero positivo
+if($ht < 0 || !is_numeric($ht)) $error[] = "Las horas trabajadas deben de ser un número positivo";
+
+// si estamos libres de errores, continuamos con el programa
+if(!isset($error)) {
+	// Evaluamos las horas trabajadas para determinar si hay horas extras o no
+	if($ht > 40) {
+		// Calculo de sueldo con horas extras
+		$he = $ht - 40;
+		$sueldo_he = $he * CUOTA_HORA_EXTRA;
+		$sueldo_hn = 40 * CUOTA_HORA_NORMAL;
+		$total = $sueldo_hn + $sueldo_he;
+	}
+	else {
+		// Calculo de sueldo sin horas extras
+		$total = $ht * CUOTA_HORA_NORMAL;
+	}
 }
 
 ?>
@@ -31,6 +45,8 @@ else {
 </head>
 <body>
 	<h1>Sueldo de un empleado</h1>
+	<?php
+	if(!isset($error)) { ?>
 	<p>El empleado <?php echo "$nombre $apellidos"; ?> trabajó <?php echo $ht; ?> horas por lo que obtuvo un sueldo de <strong>$<?php echo $total; ?></strong></p>
 	<p>A continuación se presenta el desglose:</p>
 
@@ -43,6 +59,10 @@ else {
 		}
 
 		//include ($ht > 40) ? 'vistas/desglose_con_he.php' : 'vistas/desglose_sin_he.php';
+	}
+	else {
+		var_dump($error);
+	}
 	?>
 </body>
 </html>
