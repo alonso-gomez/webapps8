@@ -1,4 +1,18 @@
 <?php
+// Definimos una funcion para imprimir mensajes
+function printMsg($msg){
+	if(is_array($msg)){
+		echo '<ul>';
+		foreach($msg as $caca){
+			echo '<li>'.$caca.'</li>';
+		}
+		echo '</ul>';
+	}
+	else {
+		echo $msg;
+	}
+}
+
 // Definimos variables
 $nombre = $_GET['nombre'];
 $apellidos = $_GET['apellidos'];
@@ -61,7 +75,8 @@ if(!isset($error)) {
 		//include ($ht > 40) ? 'vistas/desglose_con_he.php' : 'vistas/desglose_sin_he.php';
 	}
 	else {
-		var_dump($error);
+		printMsg($error);
+		printMsg("mensaje de error");
 	}
 	?>
 </body>
