@@ -1,5 +1,6 @@
 ﻿<?php
-// Incluimos las utilerias
+// Incluimos la conexión y las utilerias
+include("connections/conn_localhost.php");
 include("helpers/utils.php");
 
 // Verificamos si el formulario ha sido enviado evaluando si el indice del boton existe
@@ -11,6 +12,19 @@ if(isset($_POST['user_add_sent'])) {
 
   // Validamos si los password son coincidentes
   if($_POST['password'] != $_POST['password2']) $error[] = "The passwords didn't match";
+
+  // Si no existen errores, continuamos con la preparación del query de inserción
+  if(!isset($error)) {
+    $queryInsertUser = sprintf(
+      "INSERT INTO users (firstname, lastname, email, password, phone, role) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+      mysqli_real_escape_string($connLocalhost, trim($_POST["firstname"])),
+      mysqli_real_escape_string($connLocalhost, trim($_POST["lastname"])),
+      mysqli_real_escape_string($connLocalhost, trim($_POST["email"])),
+      mysqli_real_escape_string($connLocalhost, trim($_POST["password"])),
+      mysqli_real_escape_string($connLocalhost, trim($_POST["phone"])),
+      mysqli_real_escape_string($connLocalhost, trim($_POST["role"]))
+    );
+  }
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,6 +63,7 @@ function MM_jumpMenuGo(objId,targ,restore){ //v9.0
   <h2>User add</h2>
   <p>Use the form below to add a new user.</p>
   <?php if(isset($error)) printMsg($error, "error"); ?>
+  <?php if(isset($queryInsertUser)) printMsg($queryInsertUser, "error"); ?>
 
   <form action="user_add.php" method="post">
     <table>
