@@ -24,6 +24,12 @@ if(isset($_POST['user_add_sent'])) {
       mysqli_real_escape_string($connLocalhost, trim($_POST["phone"])),
       mysqli_real_escape_string($connLocalhost, trim($_POST["role"]))
     );
+
+    // Ejecutamos el query para guardar el usuario
+    mysqli_query($connLocalhost, $queryInsertUser) or trigger_error("The user register query failed.");
+
+    // Redireccionamos al usuario al Panel de Control y generamos un flag
+    header("Location: cpanel.php?userRegister=true");
   }
 }
 ?>
