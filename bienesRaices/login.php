@@ -1,5 +1,11 @@
 ﻿<?php
-// Incluimos las utilerías
+// Inicializamos la sesión o la retomamos
+if(!isset($_SESSION)) {
+  session_start();
+}
+
+// Incluimos la conexión y las utilerías
+include("connections/conn_localhost.php");
 include("helpers/utils.php");
 
 // Validamos si el formulario de login ha sido enviado
@@ -10,6 +16,34 @@ if(isset($_POST["user_login_sent"])) {
   }
 
   // Si no hay error, continuamos con el login del usuario
+  // preparamos el query para buscar al usuario
+  $queryUserLogin = sprintf(
+    "SELECT id, firstname, lastname, email, role FROM users WHERE email = '%s' AND password = '%s'",
+    mysqli_real_escape_string($connLocalhost, trim($_POST["email"])),
+    mysqli_real_escape_string($connLocalhost, trim($_POST["password"]))
+  );
+
+  // Ejecutamos el query
+  $resQueryUserLogin = mysqli_query($connLocalhost, $queryUserLogin) or trigger_error("The user login query failed.");
+
+  // Determinamos si el usuario se encontró en la BD, para eso contamos el número de registros encontrados
+  if(mysqli_num_rows($resQueryUserLogin)) {
+    // Hacemos fetch de los datos del usuario encontrado
+    $userData = mysqli_fetch_assoc($resQueryUserLogin);
+
+    // Inicializamos varios indices de SESSION que nos serán útiles
+    $_SESSION["userId"] = $userData["id"];
+    $_SESSION["userFullname"] = $userData["firstname"]." ".$userData["lastname"];
+    $_SESSION["userEmail"] = $userData["email"];
+    $_SESSION["userRole"] = $userData["role"];
+
+    // Redirigimos al usuario al cpanel y definimos un flag
+    header("Location: cpanel.php?login=true");
+  }
+  else {
+    $error[] = "Login failed";
+  }
+
 
 }
 
@@ -48,7 +82,13 @@ function MM_jumpMenuGo(objId,targ,restore){ //v9.0
 
 <div id="content" class="txt_content">
   <h2>Login</h2>
-  <?php if(isset($error)) printMsg($error, "error"); ?>
+  <?php 
+  if(isset($error)) printMsg($error, "error");
+  if(isset($queryUserLogin)) printMsg($queryUserLogin, "anuncio");
+  if(isset($userData)) var_dump($userData);
+  echo "<br />";
+  if(isset($_SESSION)) var_dump($_SESSION);
+  ?>
   &nbsp;
   <form action="login.php" method="post">
     <table>
